@@ -278,6 +278,132 @@ Key fields you should recognize:
 
 ---
 
+# Practice Problems (Step-by-Step)
+
+## Problem 1
+**Question**: A CIDR block extends from 180.84.216.0 to 180.84.223.255. How many bits are in the NetID and the HostID?
+
+**Step-by-step**:
+1. Look at the range in the last octet: 216 to 223.
+2. The block size is $223 - 216 + 1 = 8$.
+3. Block size 8 means $2^3 = 8$ → 3 host bits in that octet.
+4. Since block size is in the 3rd octet, the mask is `/21` (because /24 would be 1 in the last octet; we borrowed 3 bits from the 3rd octet).
+5. NetID bits = 21, HostID bits = $32 - 21 = 11$.
+
+**Answer**: NetID: 21 bits, HostID: 11 bits.
+
+---
+
+## Problem 2
+**Question**: We wish to assign a CIDR block of 1024 addresses (including all 0's and 1's), starting at 204.201.128.0. How many bits are needed to have a block of 1024 IP addresses?
+
+**Step-by-step**:
+1. Total addresses in a block = $2^{host\ bits}$.
+2. $1024 = 2^{10}$.
+3. Therefore, host bits = 10.
+
+**Answer**: 10 bits.
+
+---
+
+## Problem 3
+**Question**: A CIDR block extends from 180.84.216.0 to 180.84.223.255. What is the mask in binary?
+
+**Step-by-step**:
+1. From Problem 1, the prefix is `/21`.
+2. /21 means 21 ones, then 11 zeros.
+3. Binary mask by octet:
+	- 8 ones → 11111111
+	- 8 ones → 11111111
+	- 5 ones → 11111000
+	- 8 zeros → 00000000
+
+**Answer**: 11111111 11111111 11111000 00000000
+
+---
+
+## Problem 4
+**Question**: Forwarding table below. Where does router XYZ send packets destined for 161.75.23.14?
+
+```
+Network/Mask           Next Hop
+161.75.24.0/21         direct
+161.75.20.0/22         175.129.178.1
+161.75.40.0/21         175.129.178.2
+161.75.40.0/22         175.129.178.3
+161.75.48.0/20         175.129.178.4
+0.0.0.0/0              175.129.178.5
+```
+
+**Step-by-step**:
+1. Check which networks include 161.75.23.14.
+2. 161.75.20.0/22 covers 161.75.20.0–161.75.23.255 (block size 4 in 3rd octet).
+3. 161.75.24.0/21 starts at 24, so it does **not** include 23.14.
+4. Longest-prefix match among matches is 161.75.20.0/22.
+
+**Answer**: Forward to 175.129.178.1.
+
+---
+
+## Problem 5
+**Question**: RIP update. How will A update its route to Net 7?
+
+Router A table:
+
+```
+Net 1: 2 via B
+Net 2: 0 direct
+Net 3: 5 via C
+Net 4: 3 via K
+Net 5: 1 via C
+Net 6: 15 via B
+Net 8: 13 via K
+```
+
+Router B sends:
+
+```
+Net 7: 15
+Net 1: 14
+Net 6: 2
+Net 8: 15
+Net 3: 7
+Net 10: 14
+```
+
+**Step-by-step**:
+1. RIP adds 1 hop when learning from a neighbor.
+2. B says Net 7 is distance 15 → A would see distance 16 via B.
+3. RIP max hop count = 15. Distance 16 is unreachable.
+
+**Answer**: A will not add Net 7 (16 hops is too long).
+
+---
+
+## Problem 6
+**Question**: RIP update. How will A update its route to Net 3?
+
+**Step-by-step**:
+1. A currently has Net 3 at distance 5 via C.
+2. B advertises Net 3 at distance 7.
+3. If A used B, distance would be 8 (7 + 1).
+4. A keeps the shorter path (distance 5).
+
+**Answer**: Do nothing and keep the same distance and next hop.
+
+---
+
+## Problem 7
+**Question**: Match destinations to correct next hop from Router C.
+
+**Step-by-step**:
+1. Use longest-prefix match against Router C’s forwarding table.
+2. Choose the next hop from the most specific matching route.
+
+**Note**: The forwarding table and answer choices for Router C weren’t provided here, so I can’t complete the matches yet. Add that table and I’ll fill in the exact next hops.
+
+---
+
 # FINAL EXAM CHEAT SHEET (ONE PAGE)
 
 **Write these on your one-page handwritten sheet.**
